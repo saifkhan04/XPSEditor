@@ -8,7 +8,7 @@ HRESULT XPSLib::Cpp::XPSApi::CreateDefaultXPSFile() const
 	IXpsOMObjectFactory1_t				xpsFactory(NULL);
 	IXpsOMPackage1_t					xpsPackage(NULL);
 
-	hr = CoInitializeEx(0, COINIT_MULTITHREADED);
+	//hr = CoInitializeEx(0, COINIT_MULTITHREADED);
 
 	if (SUCCEEDED(hr)) {
 		hr = CoCreateInstance(

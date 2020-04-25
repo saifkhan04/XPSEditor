@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XPSEditor"
         mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
         WindowStyle="ToolWindow"
         WindowStartupLocation="CenterScreen"
         Title="XPS Editor"
-        Height="200" Width="200">
+        Height="800" Width="1400"
+        Background="#808080">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
                 <MenuItem Header="_New" />
                 <MenuItem Header="_Open" />
-                <MenuItem Header="_Save" />
+                <MenuItem Header="_Save As..." Click="Menu_Save"/>
                 <Separator />
                 <MenuItem Header="_Exit" />
             </MenuItem>

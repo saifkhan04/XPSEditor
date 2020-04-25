@@ -27,7 +27,7 @@ namespace XPSEditor
             InitializeComponent();
             XPSApi.InitializeLibrary(Environment.CurrentDirectory + "XPSLib.CPP.dll");
         }
-        private void _Save(object sender, EventArgs e)
+        private void Menu_Save(object sender, EventArgs e)
         {
             using (var wrapper = new XPSApi())
             {
