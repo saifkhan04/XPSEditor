@@ -170,6 +170,11 @@
     </ClCompile>
     <ClCompile Include="XPSLib.CLI.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\XPSLib.CPP\XPSLib.vcxproj">
+      <Project>{2397755e-7db4-41ba-b4f2-5d9c3609de25}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

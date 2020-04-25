@@ -25,23 +25,13 @@ namespace XPSEditor
         public MainWindow()
         {
             InitializeComponent();
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
             XPSApi.InitializeLibrary(Environment.CurrentDirectory + "XPSLib.CPP.dll");
-
-            using (var wrapper = new XPSApi())
-            {
-                MessageBox.Show("The answer is " + wrapper.LoadXPSFIle());
-            }
         }
         private void _Save(object sender, EventArgs e)
         {
-            XPSApi.InitializeLibrary(Environment.CurrentDirectory + "XPSLib.CPP.dll");
-
             using (var wrapper = new XPSApi())
             {
-                wrapper.LoadXPSFIle();
+                wrapper.CreateDefaultXPSFile();
             }
         }
     }
