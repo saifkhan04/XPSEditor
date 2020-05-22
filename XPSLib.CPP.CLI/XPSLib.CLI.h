@@ -22,14 +22,19 @@ namespace XPSLib
 				XPSApi();
 				~XPSApi();
 				!XPSApi();
-
-				int CreateDefaultXPSFile();
-
+				
+				int SavefiletoLocation(System::String^ path1);
+				int CreateBlankXPSFile();
+				int ChangePageSize(float width, float height);
+				int SaveChanges();
+				int InsertPicture(System::String^ imagepath);
+				int InsertText(System::String^ path1,float size);
 				void Destroy(); // Helper function
 				static void InitializeLibrary(System::String^ path);
 			private:
 				// Pointer to our implementation
 				Cpp::XPSApi* _impl;
+				
 			};
 		}
 	}

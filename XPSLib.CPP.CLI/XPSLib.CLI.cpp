@@ -6,17 +6,51 @@
 #include "..\XPSLib.CPP\XPSLib.h"
 
 using namespace std;
+string ManagedStringToStdString(System::String^ str)
+{
+	cli::array<unsigned char>^ bytes = System::Text::Encoding::ASCII->GetBytes(str);
+	pin_ptr<unsigned char> pinned = &bytes[0];
+	std::string nativeString((char*)pinned, bytes->Length);
+	return nativeString;
+}
 
 XPSLib::Cpp::CLI::XPSApi::XPSApi()
 	: _impl(new Cpp::XPSApi())
 	// Allocate some memory for the native implementation
 {
+
+       }
+int XPSLib::Cpp::CLI::XPSApi::SavefiletoLocation(System::String^ path1)
+{
+	string str1 = ManagedStringToStdString(path1);
+
+	return _impl->SavefiletoLocation(str1); // Call corresponding native function
+}
+int XPSLib::Cpp::CLI::XPSApi::InsertText(System::String^ path1,float size)
+{
+	string str1 = ManagedStringToStdString(path1);
+
+	return _impl->InsertText(str1,size); // Call corresponding native function
+}
+int XPSLib::Cpp::CLI::XPSApi::CreateBlankXPSFile()
+{
+	return _impl->CreateBlankXPSFile(); // Call corresponding native function
+}
+int XPSLib::Cpp::CLI::XPSApi::ChangePageSize(float width,float height)
+{
+	return _impl->ChangePageSize(width,height); // Call corresponding native function
+}
+int XPSLib::Cpp::CLI::XPSApi::SaveChanges()
+{
+	return _impl->SaveChanges(); // Call corresponding native function
+}
+int XPSLib::Cpp::CLI::XPSApi::InsertPicture(System::String^ path1)
+{
+	string str1 = ManagedStringToStdString(path1);
+	
+	return _impl->InsertPicture(str1); // Call corresponding native function
 }
 
-int XPSLib::Cpp::CLI::XPSApi::CreateDefaultXPSFile()
-{
-	return _impl->CreateDefaultXPSFile(); // Call corresponding native function
-}
 
 void XPSLib::Cpp::CLI::XPSApi::Destroy()
 {
@@ -42,19 +76,10 @@ XPSLib::Cpp::CLI::XPSApi::!XPSApi()
 	Destroy(); // Clean-up any native resources 
 }
 
-string ManagedStringToStdString(System::String^ str)
-{
-	cli::array<unsigned char>^ bytes = System::Text::Encoding::ASCII->GetBytes(str);
-	pin_ptr<unsigned char> pinned = &bytes[0];
-	std::string nativeString((char*)pinned, bytes->Length);
-	return nativeString;
-}
 
 void XPSLib::Cpp::CLI::XPSApi::InitializeLibrary(System::String^ path)
 {
 	string nativePath = ManagedStringToStdString(path);
 	LoadLibrary(nativePath.c_str()); // Actually load the delayed library from specific location
 }
-
-
 

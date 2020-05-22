@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XPSLib.CPP.CLI", "XPSLib.CP
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XPSLib.CPP", "XPSLib.CPP\XPSLib.vcxproj", "{2397755E-7DB4-41BA-B4F2-5D9C3609DE25}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B1BD761E-A0A7-4E52-BD36-68A48DE0B788}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

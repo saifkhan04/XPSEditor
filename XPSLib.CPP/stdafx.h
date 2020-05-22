@@ -35,5 +35,8 @@ using namespace std;
 
 #include <atlbase.h>
 #include <atlstr.h>
+#include<Windows.h>
+#include<string.h>
+#include<iostream>
 
 // TODO: reference additional headers your program requires here

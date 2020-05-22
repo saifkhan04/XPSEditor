@@ -11,6 +11,8 @@ typedef CComPtr<IXpsOMObjectFactory1> IXpsOMObjectFactory1_t;
 typedef CComPtr<XpsOMObjectFactory> XpsOMObjectFactory_t;
 typedef CComPtr<IXpsOMPackageWriter> IXpsOMPackageWriter_t;
 typedef CComPtr<IXpsOMPackage1> IXpsOMPackage1_t;
+typedef CComPtr<IXpsOMPackage> IXpsOMPackage_t;
+
 typedef CComPtr<IXpsOMDocumentStructureResource> IXpsOMDocumentStructureResource_t;
 typedef CComPtr<IXpsOMSignatureBlockResourceCollection> IXpsOMSignatureBlockResourceCollection_t;
 typedef CComPtr<IXpsOMPartUriCollection> IXpsOMPartUriCollection_t;

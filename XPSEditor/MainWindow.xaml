@@ -5,21 +5,42 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:XPSEditor"
         mc:Ignorable="d"
-        WindowStyle="ToolWindow"
+        Icon="XPSICON.ico"
+        WindowStyle="SingleBorderWindow"
         WindowStartupLocation="CenterScreen"
         Title="XPS Editor"
         Height="800" Width="1400"
-        Background="#808080">
+        Background="#808080"
+        >
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <MenuItem Header="_New" />
-                <MenuItem Header="_Open" />
-                <MenuItem Header="_Save As..." Click="Menu_Save"/>
-                <Separator />
+            <MenuItem Header="_File" ToolTip="Click here to save file">
+                <MenuItem Header="_New" Click="Menu_New"/>
+                <MenuItem Header="_Open" Click="Menu_Open"  />
+                <MenuItem Header="_Save As..." Click="Menu_SaveAs"/>
+                <MenuItem Header="_Save..." Click="Menu_Save"/>
+                <Separator/>
                 <MenuItem Header="_Exit" />
             </MenuItem>
+            <MenuItem Header="_Layout">
+                <MenuItem Header="_Papersize">
+                    <MenuItem Header="letter" Click="Papersize" ToolTip="Width: 816 Height: 1056"/>
+                    <MenuItem Header="A4" Click="Papersize" ToolTip="Width: 796.8 Height: 1123.2"/>
+                    <MenuItem Header="A5" Click="Papersize" ToolTip="Width: 556.8 Height: 796.8"/>
+                    <MenuItem Header="A3" Click="Papersize" ToolTip="Width: 1123.2 Height: 1584"/>
+                </MenuItem>
+            </MenuItem>
+           <MenuItem Header="_Insert" ToolTip="Click here to insert picture">
+                <MenuItem Header="_Picture" Click="Picture_insert"/>
+                <MenuItem Header="_Text" Click="Text_Insert"/>
+
+            </MenuItem>
+
+                <ComboBox x:Name="comboBoxFonts" ToolTip="Click to select font style" SelectionChanged="comboBoxFonts_SelectionChanged" Width="110" Loaded="comboBoxFonts_Loaded"/>
+
+            <ComboBox x:Name="Fontsize" ToolTip="Click to select font size" SelectionChanged="Fontsize_SelectionChanged"  Width="50" Loaded="Fontsize_Loaded"/>
         </Menu>
-        <TextBox AcceptsReturn="True" />
+      
+        <TextBox  Name="Textbox" AcceptsReturn="True" />
     </DockPanel>
 </Window>
