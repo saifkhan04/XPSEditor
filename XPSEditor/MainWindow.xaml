@@ -10,8 +10,8 @@
         WindowStartupLocation="CenterScreen"
         Title="XPS Editor"
         Height="800" Width="1400"
-        Background="#808080"
-        >
+        Background="#808080">
+    <Grid>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File" ToolTip="Click here to save file">
@@ -30,17 +30,38 @@
                     <MenuItem Header="A3" Click="Papersize" ToolTip="Width: 1123.2 Height: 1584"/>
                 </MenuItem>
             </MenuItem>
-           <MenuItem Header="_Insert" ToolTip="Click here to insert picture">
-                <MenuItem Header="_Picture" Click="Picture_insert"/>
-                <MenuItem Header="_Text" Click="Text_Insert"/>
+                <MenuItem Header="_Insert" ToolTip="Click here to insert picture">
+                    <MenuItem Header="_Picture" Click="Picture_insert"/>
+                    <MenuItem Header="_Text" Click="Text_Insert"/>
 
-            </MenuItem>
-
-                <ComboBox x:Name="comboBoxFonts" ToolTip="Click to select font style" SelectionChanged="comboBoxFonts_SelectionChanged" Width="110" Loaded="comboBoxFonts_Loaded"/>
-
-            <ComboBox x:Name="Fontsize" ToolTip="Click to select font size" SelectionChanged="Fontsize_SelectionChanged"  Width="50" Loaded="Fontsize_Loaded"/>
-        </Menu>
-      
+                </MenuItem>
+            </Menu>
+       
+     
         <TextBox  Name="Textbox" AcceptsReturn="True" />
     </DockPanel>
+        <Grid x:Name="InputBox" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+            <Border
+            BorderBrush="Black" 
+            BorderThickness="1" 
+                Background="WhiteSmoke"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <ComboBox x:Name="comboBoxFonts" ToolTip="Click to select font style"  SelectionChanged="comboBoxFonts_SelectionChanged" Width="300" Loaded="comboBoxFonts_Loaded"/>
+                        <ComboBox Name="cmbFontSize" Width="50" ToolTip="Click to select font size" SelectedIndex="0" IsEditable="True" TextBoxBase.TextChanged="cmbFontSize_TextChanged" />
+                    </StackPanel>
+                    <TextBlock Margin="5" Text="Enter Your Text Here:" FontWeight="Bold" FontFamily="Cambria" FontSize="22" />
+                    <TextBox MinWidth="150" Width="300" Height="250" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="YesButton" Margin="5" Content="OK"  Click="YesButton_Click"/>
+                        <Button x:Name="NoButton" Margin="5" Content="CANCEL"  Click="NoButton_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+    </Grid>
 </Window>

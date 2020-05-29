@@ -2,7 +2,7 @@
 #include "XPSLib.h"
 // Function for adding text to page....
 HRESULT
-WriteText_AddTextToPage(
+XPSLib::Cpp::XPSApi::WriteText_AddTextToPage(
 	__in    IXpsOMObjectFactory   *xpsFactory,
 	// The font resource to use for this run
 	__in    IXpsOMFontResource    *xpsFont,
@@ -15,7 +15,7 @@ WriteText_AddTextToPage(
 	// The text to use for this run
 	__in    LPCWSTR               unicodeString,
 	// The page on which to write this glyph run
-	__in IXpsOMPage            *xpsPage)
+	__in IXpsOMPage            *xpsPage) const
 {
 	HRESULT                       hr = S_OK;
 	XPS_POINT                     glyphsOrigin = { origin->x,origin->y };
@@ -47,12 +47,12 @@ WriteText_AddTextToPage(
 	return hr;
 }
 //Function to get the image size and its resolution
-HRESULT GetImageProperties(
+HRESULT XPSLib::Cpp::XPSApi::GetImageProperties(
 	__in IStream_t	imageStream,
 	__out XPS_SIZE &imagesize,
 	__out FLOAT &dpiX,
 	__out FLOAT &dpiY
-)
+) const
 {
 	HRESULT hr = S_OK;
 	IWICImagingFactory_t factory(NULL);
@@ -113,11 +113,11 @@ HRESULT GetImageProperties(
 	return hr;
 }
 
-HRESULT CreateRectanglePath(
+HRESULT XPSLib::Cpp::XPSApi::CreateRectanglePath(
 	__in  IXpsOMObjectFactory1_t   &xpsFactory,
 	__in  const XPS_RECT			*rect,
 	__out IXpsOMPath_t           &rectPath
-)
+) const
 {
 	HRESULT hr = S_OK;
 
@@ -166,7 +166,7 @@ HRESULT CreateRectanglePath(
 //Saves the file to the given location.....
 HRESULT XPSLib::Cpp::XPSApi::SavefiletoLocation(string str) const 
 {	
-	XPSApi::m_pathcopy = str;
+	m_pathcopy = str;
 	wstring wide_string = wstring(str.begin(), str.end());
 	const wchar_t* wide1 =wide_string.c_str();
 	HRESULT hr = S_OK;
@@ -307,9 +307,20 @@ HRESULT XPSLib::Cpp::XPSApi::ChangePageSize(float width, float height) const
 }
 
 //Saves the changes made to the document......
-HRESULT XPSLib::Cpp::XPSApi::SaveChanges() const
+HRESULT XPSLib::Cpp::XPSApi::SaveChanges(string str) const
 {
-	if (m_pathcopy != " ")
+	if (m_pathcopy==" ")
+	{
+		XPSApi::m_pathcopy = str;
+		wstring wide_string = wstring(str.begin(), str.end());
+		const wchar_t* wide1 = wide_string.c_str();
+		HRESULT hr = S_OK;
+		hr = m_xpsPackage->WriteToFile(wide1, NULL, FILE_ATTRIBUTE_NORMAL, FALSE);
+		return hr;
+		
+	}
+
+	else
 	{
 		HRESULT hr = S_OK;
 		wstring wide_string = wstring(m_pathcopy.begin(), m_pathcopy.end());
@@ -317,9 +328,6 @@ HRESULT XPSLib::Cpp::XPSApi::SaveChanges() const
 		hr = m_xpsPackage->WriteToFile(wide1, NULL, FILE_ATTRIBUTE_NORMAL, FALSE);
 
 		return hr;
-	}
-	else if (m_pathcopy == " ")
-	{
 		
 	}
 }
@@ -334,6 +342,7 @@ HRESULT XPSLib::Cpp::XPSApi::InsertPicture(string imagepath) const
 	IXpsOMPath_t						imageRectPath(NULL);
 	IXpsOMImageBrush_t					imageBrush(NULL);
 	IXpsOMVisualCollection_t			pageVisuals(NULL);
+
 	wstring imgloc = wstring(imagepath.begin(), imagepath.end());
 	const wchar_t* imgpath = imgloc.c_str();
 	UINT32  numDocs = 0;
@@ -456,7 +465,7 @@ HRESULT XPSLib::Cpp::XPSApi::InsertPicture(string imagepath) const
 }
 
 // Function for inserting text....
-HRESULT XPSLib::Cpp::XPSApi::InsertText(string str,float size) const
+HRESULT XPSLib::Cpp::XPSApi::InsertText(string str,float size,string text) const
 {
 	HRESULT hr = S_OK;
 	IXpsOMObjectFactory1_t			    xpsFactory(NULL);
@@ -473,15 +482,17 @@ HRESULT XPSLib::Cpp::XPSApi::InsertText(string str,float size) const
 		GUID                          fontNameGuid;
 		WCHAR                         guidString[128] = { 0 };
 		WCHAR                         uriString[256] = { 0 };
-		IStream                       *fontStream = NULL;
-		IOpcPartUri                   *fontUri = NULL;
-		IXpsOMFontResource            *fontResource = NULL;
-		IXpsOMVisualCollection        *pageVisuals = NULL;
-		IXpsOMVisual                  *canvasVisual = NULL;
+		IStream_t                     fontStream(NULL);
+		IOpcPartUri_t                 fontUri(NULL);
+		IXpsOMFontResource_t          fontResource(NULL);
+		IXpsOMVisualCollection_t      pageVisuals(NULL);
+		IXpsOMVisual_t                canvasVisual(NULL);
 		IXpsOMSolidColorBrush         *xpsTextColor = NULL;
 		XPS_COLOR                     xpsColorBodyText;
 		wstring fontloc = wstring(str.begin(), str.end());
 		const wchar_t* fontpath = fontloc.c_str();
+		wstring texts = wstring(text.begin(), text.end());
+		const wchar_t* content = texts.c_str();
 		// Create font stream.
 		hr = xpsFactory->CreateReadOnlyStreamOnFile(
 			fontpath, &fontStream);
@@ -492,15 +503,14 @@ HRESULT XPSLib::Cpp::XPSApi::InsertText(string str,float size) const
 			guidString,
 			ARRAYSIZE(guidString));
 
-		// Create a URI string for this font resource that will place 
-		//  the font part in the /Resources/Fonts folder of the package.
+		// Create a URI string for this font resource that will place  the font part in the /Resources/Fonts folder of the package.
 		wcscpy_s(uriString, ARRAYSIZE(uriString), L"/Resources/Fonts/");
 
 		// Create the part name using the GUID string as the name and 
 		//  ".odttf" as the extension GUID string start and ends with 
 		//  curly braces so they are removed.
 		wcsncat_s(uriString, ARRAYSIZE(uriString),
-			guidString + 1, wcslen(guidString) - 2);
+			guidString + 1, wcslen(guidString) - 2);		
 		wcscat_s(uriString, ARRAYSIZE(uriString), L".ttf");
 
 		// Create the font URI interface.
@@ -514,16 +524,11 @@ HRESULT XPSLib::Cpp::XPSApi::InsertText(string str,float size) const
 			fontUri,
 			FALSE,     // isObfSourceStream
 			&fontResource);
-		wchar_t* texts[] = { L"test string" };
 		
-		XPS_POINT startpoints[1];
-		startpoints[0].x = 200;
-		startpoints[0].y = 300;
-		UINT32                    numRuns = 1;
-	
-		UINT32                    thisRun = 0;
-		thisRun = 0;
-		while (thisRun < numRuns) {
+		XPS_POINT startpoints;
+		startpoints.x = 200;
+		startpoints.y = 300;
+		
 			// Create the brush to use for the font.
 			xpsColorBodyText.colorType = XPS_COLOR_TYPE_SRGB;
 			xpsColorBodyText.value.sRGB.alpha = 0xFF;
@@ -541,13 +546,13 @@ HRESULT XPSLib::Cpp::XPSApi::InsertText(string str,float size) const
 				fontResource,
 				size,
 				xpsTextColor,
-				&startpoints[thisRun],
-				texts[thisRun],
+				&startpoints,
+				content,
 				m_page);
 			
-			thisRun++;
+			
 			if (NULL != xpsTextColor) xpsTextColor->Release();
-		}
+		
 	}
 	return hr;
 

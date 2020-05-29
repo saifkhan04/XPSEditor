@@ -26,8 +26,10 @@ namespace XPSEditor
     public partial class MainWindow : Window
     {
         XPSApi Xpsapiwrapper;
-        string fontpath = " ";
-        float size;
+        string m_fontpath = " ";
+        float m_size;
+        string m_path1 = "";
+        string m_input = "";
         System.Collections.Generic.Dictionary<string, List<string>> fontNameToFiles = new Dictionary<string, List<string>>();
 
 
@@ -37,19 +39,23 @@ namespace XPSEditor
             XPSApi.InitializeLibrary(Environment.CurrentDirectory + "XPSLib.CPP.dll");
             Xpsapiwrapper = new XPSApi();
             Xpsapiwrapper.CreateBlankXPSFile();
+            cmbFontSize.ItemsSource = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
         }
         
         
         private void Menu_SaveAs(object sender, EventArgs e)
         {
-            string path1 = "";
+           
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             if (saveFileDialog.ShowDialog() == true)
             {
-                path1 = saveFileDialog.FileName;
-                path1 = System.IO.Path.GetFullPath(path1);
+                m_path1 = saveFileDialog.FileName;
+                m_path1 = System.IO.Path.GetFullPath(m_path1);
             }
-            Xpsapiwrapper.SavefiletoLocation(path1);
+            if (!(string.IsNullOrEmpty(m_path1)))
+            {
+                Xpsapiwrapper.SavefiletoLocation(m_path1);
+            }
 
         }
 
@@ -66,8 +72,20 @@ namespace XPSEditor
 
         private void Menu_Save(object sender, EventArgs e)
         {
-            Xpsapiwrapper.SaveChanges();
-
+            if (string.IsNullOrEmpty(m_path1))
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    m_path1 = saveFileDialog.FileName;
+                    m_path1 = System.IO.Path.GetFullPath(m_path1);
+                }
+                Xpsapiwrapper.SaveChanges(m_path1);              
+            }
+            else
+            {
+                Xpsapiwrapper.SaveChanges(m_path1);
+            }
         }
        
         //Function call to change paper size....
@@ -97,7 +115,7 @@ namespace XPSEditor
         // Function call to insert picture.....
          private void Picture_insert(object sender, EventArgs e)
         {
-            string imagepath = " ";
+            string imagepath ="";
             OpenFileDialog op = new OpenFileDialog();
             op.Title = "Select a picture";
             op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
@@ -107,8 +125,12 @@ namespace XPSEditor
             {
                 imagepath=op.FileName;
                 imagepath = System.IO.Path.GetFullPath(imagepath);
+               
             }
-            Xpsapiwrapper.InsertPicture(imagepath);
+            if (!(string.IsNullOrEmpty(imagepath)))
+            {
+                Xpsapiwrapper.InsertPicture(imagepath);
+            }   
         }
 
         //Function to load fontnames in comboBox......
@@ -147,41 +169,53 @@ namespace XPSEditor
         {
             string s = comboBoxFonts.Items.GetItemAt(comboBoxFonts.SelectedIndex).ToString();
             var result = GetFilesForFont(s);
-            string[] strArray = new string[result.Count];
-            int i = 0;
-            foreach (string value in result)
-            {
-                strArray[i] = value;
-                i++;
-            }
-                fontpath = (strArray[0]);
+         
+         
+             m_fontpath = result[0];
             
-            fontpath = System.IO.Path.GetFullPath(fontpath);
+            m_fontpath = System.IO.Path.GetFullPath(m_fontpath);
 
         }
 
-        //Function call for text inserting....
+        // Function for text input box opening....
         private void Text_Insert(object sender, RoutedEventArgs e)
         {
 
-            string str = Textbox.Text;
-            Xpsapiwrapper.InsertText(fontpath,size);
+            InputBox.Visibility = System.Windows.Visibility.Visible;
 
         }
 
-        //Function to load fontsize in the combobox.....
-        private void Fontsize_Loaded(object sender, RoutedEventArgs e)
+        // Function to change fontsize.....
+        private void cmbFontSize_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var list = new List<int>();
-            list.AddRange(Enumerable.Range(25,30));
-            Fontsize.ItemsSource = list;
-            Fontsize.SelectedIndex = 0;
+            string fontsize = cmbFontSize.Items.GetItemAt(cmbFontSize.SelectedIndex).ToString();
+            m_size= float.Parse(fontsize);
         }
-        //Function to select font size......
-        private void Fontsize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+
+        private void YesButton_Click(object sender, RoutedEventArgs e)
         {
-            string fontsize = Fontsize.Items.GetItemAt(Fontsize.SelectedIndex).ToString();
-            size= float.Parse(fontsize);
+            // YesButton Clicked! Let's hide our InputBox and handle the input text.
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+
+            // Inserting text in to the page.....
+              m_input = InputTextBox.Text;
+            if (!(string.IsNullOrEmpty(m_input)))
+            {
+                Xpsapiwrapper.InsertText(m_fontpath, m_size, m_input);
+            }
+
+            // Clear InputBox.
+            InputTextBox.Text = String.Empty;
+        }
+
+        private void NoButton_Click(object sender, RoutedEventArgs e)
+        {
+            // NoButton Clicked! 
+            InputBox.Visibility = System.Windows.Visibility.Collapsed;
+
+            // Clear InputBox.
+            InputTextBox.Text = String.Empty;
         }
 
         //Function to get the font file.....     

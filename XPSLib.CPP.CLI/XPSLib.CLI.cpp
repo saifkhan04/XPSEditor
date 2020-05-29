@@ -26,24 +26,30 @@ int XPSLib::Cpp::CLI::XPSApi::SavefiletoLocation(System::String^ path1)
 
 	return _impl->SavefiletoLocation(str1); // Call corresponding native function
 }
-int XPSLib::Cpp::CLI::XPSApi::InsertText(System::String^ path1,float size)
+
+int XPSLib::Cpp::CLI::XPSApi::InsertText(System::String^ path1,float size, System::String^ str)
 {
 	string str1 = ManagedStringToStdString(path1);
+	string str2= ManagedStringToStdString(str);
 
-	return _impl->InsertText(str1,size); // Call corresponding native function
+	return _impl->InsertText(str1,size,str2); // Call corresponding native function
 }
 int XPSLib::Cpp::CLI::XPSApi::CreateBlankXPSFile()
 {
 	return _impl->CreateBlankXPSFile(); // Call corresponding native function
 }
+
 int XPSLib::Cpp::CLI::XPSApi::ChangePageSize(float width,float height)
 {
 	return _impl->ChangePageSize(width,height); // Call corresponding native function
 }
-int XPSLib::Cpp::CLI::XPSApi::SaveChanges()
+
+int XPSLib::Cpp::CLI::XPSApi::SaveChanges(System::String^ path1)
 {
-	return _impl->SaveChanges(); // Call corresponding native function
+	string str1 = ManagedStringToStdString(path1);
+	return _impl->SaveChanges(str1); // Call corresponding native function
 }
+
 int XPSLib::Cpp::CLI::XPSApi::InsertPicture(System::String^ path1)
 {
 	string str1 = ManagedStringToStdString(path1);

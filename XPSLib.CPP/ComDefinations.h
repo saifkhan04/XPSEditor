@@ -50,6 +50,8 @@ typedef CComPtr<IWICBitmapSource> IWICBitmapSource_t;
 typedef CComPtr<IWICBitmap> IWICBitmap_t;
 typedef CComPtr<IWICBitmapLock> IWICBitmapLock_t;
 
+typedef CComPtr<IXpsOMFontResource> IXpsOMFontResource_t;
+
 typedef CComPtr<IXpsOMGeometryFigure> IXpsOMGeometryFigure_t;
 typedef CComPtr<IXpsOMGeometry> IXpsOMGeometry_t;
 typedef CComPtr<IXpsOMGeometryFigureCollection> IXpsOMGeometryFigureCollection_t;
