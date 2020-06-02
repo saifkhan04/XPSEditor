@@ -1,67 +1,122 @@
-﻿<Window x:Class="XPSEditor.MainWindow"
+﻿<RibbonWindow x:Class="XPSEditor.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Ribbon="clr-namespace:System.Windows.Controls.Ribbon;assembly=System.Windows.Controls.Ribbon"
         xmlns:local="clr-namespace:XPSEditor"
         mc:Ignorable="d"
-        Icon="XPSICON.ico"
-        WindowStyle="SingleBorderWindow"
+       
+        Icon="Images/XPSICON.ico"
         WindowStartupLocation="CenterScreen"
         Title="XPS Editor"
         Height="800" Width="1400"
-        Background="#808080">
-    <Grid>
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File" ToolTip="Click here to save file">
-                <MenuItem Header="_New" Click="Menu_New"/>
-                <MenuItem Header="_Open" Click="Menu_Open"  />
-                <MenuItem Header="_Save As..." Click="Menu_SaveAs"/>
-                <MenuItem Header="_Save..." Click="Menu_Save"/>
-                <Separator/>
-                <MenuItem Header="_Exit" />
-            </MenuItem>
-            <MenuItem Header="_Layout">
-                <MenuItem Header="_Papersize">
-                    <MenuItem Header="letter" Click="Papersize" ToolTip="Width: 816 Height: 1056"/>
-                    <MenuItem Header="A4" Click="Papersize" ToolTip="Width: 796.8 Height: 1123.2"/>
-                    <MenuItem Header="A5" Click="Papersize" ToolTip="Width: 556.8 Height: 796.8"/>
-                    <MenuItem Header="A3" Click="Papersize" ToolTip="Width: 1123.2 Height: 1584"/>
-                </MenuItem>
-            </MenuItem>
-                <MenuItem Header="_Insert" ToolTip="Click here to insert picture">
-                    <MenuItem Header="_Picture" Click="Picture_insert"/>
-                    <MenuItem Header="_Text" Click="Text_Insert"/>
+        >
+    <Grid> 
+        <DockPanel>
+        <Ribbon DockPanel.Dock="Top" x:Name="RibbonWin"  SelectedIndex="0" >
+            <!-- Help Pane, located at the right-hand side -->
+            <Ribbon.HelpPaneContent>
+                <RibbonButton/>
+            </Ribbon.HelpPaneContent>
+            <!-- Quick Access Toolbar - located at the upper-left corner -->
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar>
+                    <RibbonButton x:Name ="Save" SmallImageSource="Images\saveimg.png"/>
+                    <RibbonSplitButton x:Name ="Undo" SmallImageSource="Images\undo.png">
+                        <RibbonSplitMenuItem Header="Undo 1"/>
+                        <RibbonSplitMenuItem Header="Undo 2" />
+                        <RibbonSplitMenuItem Header="Undo 3" />
+                    </RibbonSplitButton>
+                    <RibbonSplitButton x:Name="Redo" >
+                        <RibbonSplitMenuItem Header="Redo 1" />
+                        <RibbonSplitMenuItem Header="Redo 2" />
+                    </RibbonSplitButton>
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+        
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu >
+                    <RibbonApplicationMenuItem 
+                                       Header="New" ImageSource="Images\New.png"/>
+                    <RibbonApplicationMenuItem 
+                                       Header="Open" ImageSource="Images\open.png" />
+                    <RibbonApplicationSplitMenuItem 
+                                            Header="Save" ImageSource="Images\saveimg.png" Click="Save_Click"/>
+                    <RibbonApplicationMenuItem 
+                                           Header="Save As ..." Click="SaveAs_Click" />
+                  
+                    <RibbonApplicationMenuItem 
+                                       Header="Close" />
+                    <RibbonSeparator />
+                    <RibbonApplicationMenuItem 
+                                       Header="Settings" />
+                    <RibbonApplicationMenuItem 
+                                       Header="About" />
 
-                </MenuItem>
-            </Menu>
-       
-     
-        <TextBox  Name="Textbox" AcceptsReturn="True" />
-    </DockPanel>
-        <Grid x:Name="InputBox" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-            <Border
-            BorderBrush="Black" 
-            BorderThickness="1" 
-                Background="WhiteSmoke"
-            HorizontalAlignment="Center" 
-            VerticalAlignment="Center">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <ComboBox x:Name="comboBoxFonts" ToolTip="Click to select font style"  SelectionChanged="comboBoxFonts_SelectionChanged" Width="300" Loaded="comboBoxFonts_Loaded"/>
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <!--</Ribbon.ApplicationMenu>-->
+            <!-- Ribbon Tab #1: Home -->
+            <RibbonTab Header="Home" KeyTip="H" >
+                <!-- Home  group-->
+                <RibbonGroup x:Name="ClipboardGroup" Header="Home">
+                    <RibbonMenuButton  Label="Paste" LargeImageSource="Images/Paste.png" KeyTip="V">
+                        <RibbonMenuItem  Header="Keep Text Only" KeyTip="T"/>
+                        <RibbonMenuItem  Header="Paste Special..." KeyTip="S"/>
+                    </RibbonMenuButton>
+                    <RibbonButton  Label="Cut" SmallImageSource="Images/Cut.png" KeyTip="X" Margin="0,0,0,-0.4" Height="18" VerticalAlignment="Top" />
+                    <RibbonButton  Label="Copy" SmallImageSource="Images/Copy.png" KeyTip="C" />
+                    <RibbonButton  Label="FormatPainter" />
+                    <StackPanel Orientation="Horizontal">
+                        <ComboBox x:Name="comboBoxFonts" Background="LightBlue" Width="100" ToolTip="Click to select font style"  SelectionChanged="comboBoxFonts_SelectionChanged" SelectedIndex="0" Loaded="comboBoxFonts_Loaded"/>
                         <ComboBox Name="cmbFontSize" Width="50" ToolTip="Click to select font size" SelectedIndex="0" IsEditable="True" TextBoxBase.TextChanged="cmbFontSize_TextChanged" />
                     </StackPanel>
-                    <TextBlock Margin="5" Text="Enter Your Text Here:" FontWeight="Bold" FontFamily="Cambria" FontSize="22" />
-                    <TextBox MinWidth="150" Width="300" Height="250" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                        <Button x:Name="YesButton" Margin="5" Content="OK"  Click="YesButton_Click"/>
-                        <Button x:Name="NoButton" Margin="5" Content="CANCEL"  Click="NoButton_Click" />
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-        </Grid>
+                </RibbonGroup>
+               
+               
+            </RibbonTab>
+            <!-- Ribbon Tab #2: -->
+            <RibbonTab Header="Insert" KeyTip="I">
+                <RibbonGroup x:Name="Insert"  Header="Insert">
+                    <RibbonButton  Label="Picture" KeyTip="V" LargeImageSource="Images/addimage.png" Click="Picture_Click"/>
+                        <RibbonButton  Label="Text" Click="Text_Click"  LargeImageSource="Images/Textinsert.png"/>
+                </RibbonGroup>
+                </RibbonTab>
+            <!-- Ribbon Tab #3: -->
+            <RibbonTab Header="Layout" KeyTip="L">
+                <RibbonGroup x:Name="Layout" Header="PageLayout">
+                    <RibbonMenuButton  Label="Size" LargeImageSource="Images/New.png">
+                        <RibbonMenuItem  Header="Letter" Click="Size_Click"/>
+                        <RibbonMenuItem  Header="A4" Click="Size_Click" />
+                        <RibbonMenuItem  Header="A5" Click="Size_Click"/>
+                        <RibbonMenuItem  Header="A3" Click="Size_Click"/>
+                    </RibbonMenuButton>
+                </RibbonGroup>
+            </RibbonTab>
+            
+        </Ribbon>
+        <RichTextBox  Name="Textbox" AcceptsReturn="True" />
+    </DockPanel>
+    <Grid x:Name="InputBox" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
+        <Border
+            BorderBrush="Black" 
+            BorderThickness="1" 
+                Background="LightBlue"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+            <StackPanel>
+        
+                <TextBlock Margin="5" Text="Enter Your Text Here:" FontWeight="Bold" FontFamily="Cambria" FontSize="22" />
+                <TextBox MinWidth="150" Width="300" Height="250" HorizontalAlignment="Center" VerticalAlignment="Center" x:Name="InputTextBox"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button x:Name="YesButton" Margin="5" Content="OK"  Click="OkButton_Click" Background="AliceBlue"/>
+                    <Button x:Name="NoButton" Margin="5" Content="CANCEL"  Click="CancelButton_Click" Background="AliceBlue" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
     </Grid>
-</Window>
+    </Grid>
+
+</RibbonWindow>

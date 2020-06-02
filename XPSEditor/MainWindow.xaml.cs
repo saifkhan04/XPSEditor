@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Controls.Ribbon;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -19,11 +20,12 @@ using System.IO;
 namespace XPSEditor
 {
     using XPSLib.Cpp.CLI;
+    
    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : RibbonWindow
     {
         XPSApi Xpsapiwrapper;
         string m_fontpath = " ";
@@ -39,13 +41,34 @@ namespace XPSEditor
             XPSApi.InitializeLibrary(Environment.CurrentDirectory + "XPSLib.CPP.dll");
             Xpsapiwrapper = new XPSApi();
             Xpsapiwrapper.CreateBlankXPSFile();
+          
             cmbFontSize.ItemsSource = new List<double>() { 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72 };
+
         }
-        
-        
-        private void Menu_SaveAs(object sender, EventArgs e)
+
+        private void Save_Click(object sender, RoutedEventArgs e)
         {
-           
+            if (string.IsNullOrEmpty(m_path1))
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    m_path1 = saveFileDialog.FileName;
+                    m_path1 = System.IO.Path.GetFullPath(m_path1);
+                }
+              
+                    Xpsapiwrapper.SaveChanges(m_path1);
+                
+            }
+            else
+            {
+                Xpsapiwrapper.SaveChanges(m_path1);
+            }
+
+        }
+
+        private void SaveAs_Click(object sender, RoutedEventArgs e)
+        {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             if (saveFileDialog.ShowDialog() == true)
             {
@@ -59,63 +82,9 @@ namespace XPSEditor
 
         }
 
-        private void Menu_New(object sender, EventArgs e)
+        private void Picture_Click(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void Menu_Open(object sender,EventArgs e)
-        {
-            
-           
-        }
-
-        private void Menu_Save(object sender, EventArgs e)
-        {
-            if (string.IsNullOrEmpty(m_path1))
-            {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    m_path1 = saveFileDialog.FileName;
-                    m_path1 = System.IO.Path.GetFullPath(m_path1);
-                }
-                Xpsapiwrapper.SaveChanges(m_path1);              
-            }
-            else
-            {
-                Xpsapiwrapper.SaveChanges(m_path1);
-            }
-        }
-       
-        //Function call to change paper size....
-        private void Papersize(object sender, EventArgs e)
-        {
-            MenuItem item = sender as MenuItem;
-            string selec = item.Header as string;
-            if(string.Compare(selec,"letter")==0)
-            {
-                Xpsapiwrapper.ChangePageSize(816.0f, 1056.0f);
-            }
-            else if(string.Compare(selec,"A4")==0)
-            {
-                Xpsapiwrapper.ChangePageSize(796.8f, 1123.2f);
-            }
-            else if (string.Compare(selec,"A5") == 0)
-            {
-
-                Xpsapiwrapper.ChangePageSize(556.8f, 796.8f);
-            }
-            else if (string.Compare(selec,"A3") == 0)
-            {
-                Xpsapiwrapper.ChangePageSize(1123.2f, 1584f);
-            }
-        }
-
-        // Function call to insert picture.....
-         private void Picture_insert(object sender, EventArgs e)
-        {
-            string imagepath ="";
+            string imagepath = "";
             OpenFileDialog op = new OpenFileDialog();
             op.Title = "Select a picture";
             op.Filter = "All supported graphics|*.jpg;*.jpeg;*.png|" +
@@ -123,20 +92,78 @@ namespace XPSEditor
               "Portable Network Graphic (*.png)|*.png";
             if (op.ShowDialog() == true)
             {
-                imagepath=op.FileName;
+                imagepath = op.FileName;
                 imagepath = System.IO.Path.GetFullPath(imagepath);
-               
+
             }
             if (!(string.IsNullOrEmpty(imagepath)))
             {
                 Xpsapiwrapper.InsertPicture(imagepath);
-            }   
+            }
         }
 
-        //Function to load fontnames in comboBox......
+   
+
+        private void Size_Click(object sender, RoutedEventArgs e)
+        {
+            RibbonMenuItem item = sender as RibbonMenuItem;
+            string selec = item.Header as string;
+            if (string.Compare(selec, "letter") == 0)
+            {
+                Xpsapiwrapper.ChangePageSize(816.0f, 1056.0f);
+            }
+            else if (string.Compare(selec, "A4") == 0)
+            {
+                Xpsapiwrapper.ChangePageSize(796.8f, 1123.2f);
+            }
+            else if (string.Compare(selec, "A5") == 0)
+            {
+
+                Xpsapiwrapper.ChangePageSize(556.8f, 796.8f);
+            }
+            else if (string.Compare(selec, "A3") == 0)
+            {
+                Xpsapiwrapper.ChangePageSize(1123.2f, 1584f);
+            }
+
+        }
+
+
+        // Function to change fontsize.....
+        private void cmbFontSize_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            string fontsize = cmbFontSize.Items.GetItemAt(cmbFontSize.SelectedIndex).ToString();
+            m_size = float.Parse(fontsize);
+        }
+
         private void comboBoxFonts_Loaded(object sender, RoutedEventArgs e)
         {
-            List<string> copy = new List<string>();
+            foreach (FontFamily fontFamily in Fonts.SystemFontFamilies)
+            {
+                // FontFamily.Source contains the font family name.
+                comboBoxFonts.Items.Add(fontFamily.Source);
+            }
+
+            comboBoxFonts.SelectedIndex = 0;
+        }
+
+        //Function to select the fonts from combobox....
+
+        private void comboBoxFonts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            string s = comboBoxFonts.Items.GetItemAt(comboBoxFonts.SelectedIndex).ToString();
+            var result = GetFilesForFont(s);
+
+
+            m_fontpath = result[0];
+
+            m_fontpath = System.IO.Path.GetFullPath(m_fontpath);
+
+        }
+
+        private List<string> GetFilesForFont(string fontName)
+        {
+          
             foreach (var fontFile in Directory.GetFiles(Environment.GetFolderPath(Environment.SpecialFolder.Fonts)))
             {
                 var fc = new System.Drawing.Text.PrivateFontCollection();
@@ -146,60 +173,32 @@ namespace XPSEditor
                 if ((!fc.Families.Any()))
                     continue;
                 var name = fc.Families[0].Name;
-               
-                        List<string> files;
-                        if (!fontNameToFiles.TryGetValue(name, out files))
-                        {
-                            copy.Add(name);
-                            files = new List<string>();
-                            fontNameToFiles[name] = files;
-                        }
 
-                        files.Add(fontFile);      
-                
+                List<string> files;
+                if (!fontNameToFiles.TryGetValue(name, out files))
+                {
+                    
+                    files = new List<string>();
+                    fontNameToFiles[name] = files;
+                }
+
+                files.Add(fontFile);
+
             }
-            comboBoxFonts.ItemsSource = copy;
-            comboBoxFonts.SelectedIndex = 0;
 
+            List<string> result;
+            if (!fontNameToFiles.TryGetValue(fontName, out result))
+                return null;
+
+            return result;
         }
-
-        //Function to select the fonts from combobox....
-
-        private void comboBoxFonts_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            string s = comboBoxFonts.Items.GetItemAt(comboBoxFonts.SelectedIndex).ToString();
-            var result = GetFilesForFont(s);
-         
-         
-             m_fontpath = result[0];
-            
-            m_fontpath = System.IO.Path.GetFullPath(m_fontpath);
-
-        }
-
-        // Function for text input box opening....
-        private void Text_Insert(object sender, RoutedEventArgs e)
-        {
-
-            InputBox.Visibility = System.Windows.Visibility.Visible;
-
-        }
-
-        // Function to change fontsize.....
-        private void cmbFontSize_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            string fontsize = cmbFontSize.Items.GetItemAt(cmbFontSize.SelectedIndex).ToString();
-            m_size= float.Parse(fontsize);
-        }
-
-
-        private void YesButton_Click(object sender, RoutedEventArgs e)
+        private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             // YesButton Clicked! Let's hide our InputBox and handle the input text.
             InputBox.Visibility = System.Windows.Visibility.Collapsed;
 
             // Inserting text in to the page.....
-              m_input = InputTextBox.Text;
+            m_input = InputTextBox.Text;
             if (!(string.IsNullOrEmpty(m_input)))
             {
                 Xpsapiwrapper.InsertText(m_fontpath, m_size, m_input);
@@ -209,7 +208,7 @@ namespace XPSEditor
             InputTextBox.Text = String.Empty;
         }
 
-        private void NoButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             // NoButton Clicked! 
             InputBox.Visibility = System.Windows.Visibility.Collapsed;
@@ -218,16 +217,12 @@ namespace XPSEditor
             InputTextBox.Text = String.Empty;
         }
 
-        //Function to get the font file.....     
-        private List<string> GetFilesForFont(string fontName)
+        private void Text_Click(object sender, RoutedEventArgs e)
         {
-                 
-            List<string> result;
-            if (!fontNameToFiles.TryGetValue(fontName, out result))
-                return null;
-
-            return result;
+            InputBox.Visibility = System.Windows.Visibility.Visible;
         }
+
+      
     }
 }
 

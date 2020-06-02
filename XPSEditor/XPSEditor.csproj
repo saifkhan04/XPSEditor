@@ -76,6 +76,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -154,7 +155,34 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="XPSICON.ico" />
+    <Resource Include="Images\hplogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\XPSICON.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\New.png" />
+    <Resource Include="Images\open.png" />
+    <Resource Include="Images\saveimg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Paste.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\undo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Copy.png" />
+    <Resource Include="Images\Cut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\addimage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\size.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Textinsert.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
